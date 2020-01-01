@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: DB_PASSWORD
+      MYSQL_DATABASE: DB_ROOT
+    ports:
+      - DB_PORT:3306
+
+  web:
+    build: .
+    command: rails s -p WEB_PORT -b '0.0.0.0'
+    volumes:
+      - .:/app_name
+    ports:
+      - "WEB_PORT:3000"
+    links:
+      - db
