@@ -27,19 +27,19 @@ if [ -e ${APP_HOME} ]; then
         echo 'ディレクトリ削除開始'
         rm -rf ${APP_HOME}
         echo 'ディレクトリ削除終了'
-        mkdir -p ${APP_HOME}
     else
         echo '終了します'
         exit 0
     fi
 fi
 
+mkdir -p ${APP_HOME}
 # ファイルコピー
 cp ./Dockerfile ${APP_HOME}/Dockerfile
 cp ./Gemfile ${APP_HOME}/Gemfile
 cp ./Gemfile.lock ${APP_HOME}/Gemfile.lock
-cp ./sh_exec_mac.sh ${APP_HOME}/exec.sh
-cp ./sh_stop_mac.sh ${APP_HOME}/stop.sh
+cp ./exec.sh ${APP_HOME}/exec.sh
+cp ./stop.sh ${APP_HOME}/stop.sh
 
 
 # docker-compose.yml作成
@@ -57,7 +57,7 @@ docker-compose run web rails new . --force --database=mysql --skip-bundle
 # database.yml作成
 echo 'datebase.yml作成'
 sed -e 's/DB_ROOT/'${DB_ROOT}'/g'\
-    -e 's/DB_PASSWORD/'${DB_PASSWORD}'/g' ../dockerWork/database.yml > ./config/database.yml
+    -e 's/DB_PASSWORD/'${DB_PASSWORD}'/g' ../Rails_Env/database.yml > ./config/database.yml
 
 # イメージの作成
 echo 'イメージの再生成'
@@ -67,6 +67,9 @@ docker-compose build
 echo 'コンテナ起動'
 docker-compose up -d
 
-# DB作成
-echo 'DB作成'
+# Rails起動
+echo 'Rails起動'
 docker-compose run web rails db:create
+
+# DockerToolBox　IP確認用
+docker-machine ls
